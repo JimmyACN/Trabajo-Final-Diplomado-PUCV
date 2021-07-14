@@ -1,0 +1,12 @@
+---
+title: "Jimmy_Carrillo_Trabajo_Final"
+author: "Jimmy Carrillo Novoa"
+date: "14/7/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Start proyect on July 4:30
