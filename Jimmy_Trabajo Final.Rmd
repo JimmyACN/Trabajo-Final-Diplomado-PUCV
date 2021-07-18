@@ -32,6 +32,78 @@ light <- read_excel("Light_intensity.xlsx")
 ```
 
 ```{r}
-summary(ligh)
+str(light)
 ```
+
+## Ajuste de la variable Module
+
+```{r}
+light$Module <- as.factor(light$Module)
+light$Volume_m3 <- as.factor(light$Volume_m3)
+str(light)
+```
+
+## Resumen estadistico de la variables
+
+```{r}
+summary(light)
+```
+
+## Exploratorio de las variables.
+
+## Intensidad de luz- watt/sqr 2 en Modulo A y Modulo B
+
+```{r}
+ggplot(data = light,aes(x= Module, y = watt_sq2, fill=Module)) +
+  geom_boxplot() + theme(legend.position = 'right')
+
+```
+
+
+```{r}
+p <- ggplot(data = light,aes(x = Module, y = watt_sq2))
+p + geom_point(aes(colour = Volume_m3)) + stat_smooth(se = FALSE)
+```
+
+## Histograma de la variable respuesta light
+
+```{r}
+ggplot(light, aes(x=watt_sq2))+
+  geom_histogram(color="darkblue", fill="red")
+```
+
+## Variable respuesta light
+
+```{r}
+ggplot(data = light, aes(x = watt_sq2)) +
+  geom_histogram(aes(y = ..density.., fill = ..count..)) +
+  scale_fill_gradient(low = "#DCDCDC", high = "#7C7C7C") +
+  # scale_fill_gradient(low = 1, high = 2) +
+  stat_function(fun = dnorm, colour = "firebrick",
+                args = list(mean = mean(light$watt_sq2),
+                            sd = sd(light$watt_sq2))) +
+  ggtitle("Histograma de light + Curva normal teórica") +
+  theme_bw()
+```
+
+## Modelo de efectos fijos.
+
+## Ajuste de un modelo de efectos fijos donde la variable respuesta es light intensity y como efectos fijos del modelo las variables Density y Volumen de estanque. 
+
+```{r}
+mod.1 <- lm(watt_sq2 ~ Density + Volume_m3, data = light)
+
+pander::pander(summary(mod.1), caption = "Modelo de efectos fijos Intensidad de luz watt/sqr2")
+```
+
+
+
+```{r}
+mod.1.int <- lm(watt_sq2 ~ Density:Volume_m3, data = light)
+
+pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos con iteracción de densidad y volumen de estanques")
+```
+
+
+
 

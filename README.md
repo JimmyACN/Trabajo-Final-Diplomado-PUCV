@@ -40,4 +40,15 @@
 ## Luego se determinara cual es el mejor modelo para analizar el efecto de las variables sobre la variable respuesta light. 
 
 
+# Porgress on July 18.
+
+## 1- Se incluyen librerias 
+## 2- Exploratorio del set de datos light_Intensity.xlsx
+## 3- Ajuste de la variable del set de datos
+## 4- Resumen estadistico de la variables del set de datos
+## 5- Exploratorio de las variables.
+## 6- Modelo de efectos fijos.
+
+
+
 
