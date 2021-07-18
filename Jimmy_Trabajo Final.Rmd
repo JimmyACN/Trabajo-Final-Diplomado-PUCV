@@ -9,4 +9,29 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Start proyect on July 4:30
+
+## Librerias 
+```{r}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(multcomp)
+library(psych)
+library(car)
+library(nlme)
+library(lme4)
+library(readr)
+library(lmtest)
+```
+
+
+##Exploratorio del Set de Datos
+
+```{r}
+light <- read_excel("Light_intensity.xlsx")
+```
+
+```{r}
+summary(ligh)
+```
+
