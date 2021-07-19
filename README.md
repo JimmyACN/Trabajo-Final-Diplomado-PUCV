@@ -56,4 +56,6 @@
 
         ## Modelo de efectos fijos.
         ## Modelo con efectos aleatorios 
+        ## Comparacion de los modelos aleatorios
+        
 
