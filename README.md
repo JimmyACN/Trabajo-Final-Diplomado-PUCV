@@ -50,5 +50,10 @@
 ## 6- Modelo de efectos fijos.
 
 
+## Progess on July 19
 
+## ## MODELOS LINEALES MIXTOS##
+
+        ## Modelo de efectos fijos.
+        ## Modelo con efectos aleatorios 
 

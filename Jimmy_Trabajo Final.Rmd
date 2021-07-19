@@ -22,6 +22,7 @@ library(nlme)
 library(lme4)
 library(readr)
 library(lmtest)
+library(boot)
 ```
 
 
@@ -72,6 +73,7 @@ ggplot(light, aes(x=watt_sq2))+
   geom_histogram(color="darkblue", fill="red")
 ```
 
+
 ## Variable respuesta light
 
 ```{r}
@@ -86,23 +88,95 @@ ggplot(data = light, aes(x = watt_sq2)) +
   theme_bw()
 ```
 
+## MODELOS LINEALES MIXTOS##
+
 ## Modelo de efectos fijos.
 
-## Ajuste de un modelo de efectos fijos donde la variable respuesta es light intensity y como efectos fijos del modelo las variables Density y Volumen de estanque. 
+## Ajuste de un modelo de efectos fijos donde la variable respuesta es light intensity y como efectos fijos del modelo las variables Density y Volumen de estanque. Density y Volumen como variables predictoras.  
+
 
 ```{r}
 mod.1 <- lm(watt_sq2 ~ Density + Volume_m3, data = light)
 
-pander::pander(summary(mod.1), caption = "Modelo de efectos fijos Intensidad de luz watt/sqr2")
+pander::pander(summary(mod.1), caption = "Modelo de efectos fijos de la variable respuesta light y la interaccion de las variable predictora Density mas volume_m3")
+```
+## Plot del modelo
+
+```{r}
+par(mfrow=c(2,2))
+plot(mod.1)
 ```
 
 
+
+## Modelo Integrado 1
 
 ```{r}
 mod.1.int <- lm(watt_sq2 ~ Density:Volume_m3, data = light)
 
-pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos con iteracción de densidad y volumen de estanques")
+pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos de la variable respuesta light y el efecto de interaccion entre variable predictora Density y volume_m3")
 ```
+
+## Plot del Modelo
+
+```{r}
+par(mfrow=c(2,2))
+plot(mod.1.int)
+```
+
+## Modelo integrado 2
+```{r}
+mod.2.int <- lm(watt_sq2 ~ Density+Volume_m3+Density:Volume_m3, data = light)
+
+pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos de la variable respuesta light y el efecto de interaccion de las variable predictora Density y volume_m3 mas el efecto entre Density y Volume_m3")
+```
+## Plot del modelo
+```{r}
+par(mfrow=c(2,2))
+plot(mod.2.int)
+```
+
+
+## Test de normalidad para mod.2.int
+```{r}
+shapiro.test (residuals (mod.2.int))
+```
+## El valor de p-value es menor a 0.05 por lo tanto el modelo no presenta una distribucion normal.    
+
+
+## MODELOS CON EFECTOS FIJOS Y ALEATORIOS
+
+## Modelo con efectos aleatorios 1
+
+```{r}
+mod.A.1 <- lmer(watt_sq2 ~ Density + Volume_m3 + (1|Module), data = light)
+summary(mod.A.1)
+```
+
+## Modelo de efectos aleatorios 2
+
+```{r}
+mod.A.2 <- lmer(watt_sq2 ~ Density+Volume_m3+Density:Volume_m3 + (1|Module), data = light)
+summary(mod.A.2)
+```
+
+```{r}
+anova(mod.A.1,mod.A.2)
+```
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
 
 
 
