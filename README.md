@@ -50,7 +50,7 @@
 ## 6- Modelo de efectos fijos.
 
 
-## Progess on July 19
+## Progess on July 19 *****
 
 ## ## MODELOS LINEALES MIXTOS##
 
@@ -58,4 +58,36 @@
         ## Modelo con efectos aleatorios 
         ## Comparacion de los modelos aleatorios
         
+## Progress on July 20 *****
 
+## ANALISIS PARTE 1
+
+##ANALISIS DE MODELOS LINEALES MIXTOS DE EFECTOS FIJOS Y EFECTOS ALEATORIOS PARA EL ANALISIS DEL EFECTO DE LA DENSIDAD DE CULTIVO, EL VOLUMEN DEL ESTANQUE SOBRE LA INTENSIDAD DE LUZ
+
+## La variable respuesta no tiene distribucion normal por lo tanto no es posible concluir a travez del analisis mediante Modelos Lineals Mixtos.
+
+## ANALISIS PARTE 2
+
+##ANALISIS DE MODELOS LINEALES GENERALIZADOS PARA EL ANALISIS DEL EFECTO DE LA DENSIDAD DE CULTIVO, EL VOLUMEN DEL ESTANQUE SOBRE LA INTENSIDAD DE LUZ.
+
+## Se realiza analisi mediante 7 modelos distintos:
+
+## Modelo 1             mod.g1 <- glm(watt_sq2 ~ 1, family= binomial, data = light) Componentes nulo
+
+## Modelo 2             mod.g2 <- glm(watt_sq2 ~ Density, family= binomial, data = light) 
+
+## Modelo 3             mod.g2a <- glm(watt_sq2 ~ Density, family= binomial(link="cloglog"), data = light)                          enlace canonico cloglog
+
+## Modelo 4             mod.g2aa <- glm(watt_sq2 ~ Density+Module, family= binomial(link="cloglog"), data =                         light) enlace canocico cloglog y efecto de density mas Module
+
+## Modelo 5             mod.g2ab <- glm(watt_sq2 ~ Density, family= binomial(link=probit), data = light)                            enlace canonico probit
+
+## Modelo 6             mod.g2ab1 <- glm(watt_sq2 ~ Density:Module, family= binomial(link=probit), data =                           light) encale canonico probit sobre efecto entre densidad y module 
+
+## Modelo 7             mod.g2aab <- glm(watt_sq2 ~ Density+Volume_m3, family= binomial(link="cloglog"),                            data = light) enlace canonico cloglog con sobre efecto density mas volume.
+
+## CONCLUSIONES PRELIMINARES
+
+## De acuerdo al analisis anova la suma de cuadrados residuales de modelo 7 es menor al resto de los modelos, por lo tanto el modelo 7 Model 7: watt_sq2 ~ Density + Volume_m3 se ajusta de mejor a los datos analizados. De acuerdo al analisis anova se puede decir que la densidad de cultivo y el volumen del estanque tienen un efecto en la intensidad de luz. Conclusion del analisis 2: Mediante un analisis modelos generales linealizados se puede predecir el efecto de la densidad y del tamano del estqanque sobre la intensdad de la luz medida. 
+
+## Fin reporte july 20.
