@@ -105,6 +105,6 @@ Planteamiento del problema a resolver (4 puntos).
 Descripción detallada de los datos originales (4 puntos).
 Análisis exploratorio de datos (4 puntos).
 Análisis estadístico de los datos (4 puntos).
-Interpretación de los resultados y conclusión (4 puntos).
+Interpretación de los resultados y conclusión (4 puntos) 
 
 
