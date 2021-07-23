@@ -90,4 +90,21 @@
 
 ## De acuerdo al analisis anova la suma de cuadrados residuales de modelo 7 es menor al resto de los modelos, por lo tanto el modelo 7 Model 7: watt_sq2 ~ Density + Volume_m3 se ajusta de mejor a los datos analizados. De acuerdo al analisis anova se puede decir que la densidad de cultivo y el volumen del estanque tienen un efecto en la intensidad de luz. Conclusion del analisis 2: Mediante un analisis modelos generales linealizados se puede predecir el efecto de la densidad y del tamano del estqanque sobre la intensdad de la luz medida. 
 
-## Fin reporte july 20.
+
+## Progress on July 23
+
+
+# Se agrega al reporte: 
+
+warning=FALSE and message=FALSE en el primer bloque de códigos.
+
+Se inclutye los itmes al archivo Rmarkdown: 
+
+Título y autor.
+Planteamiento del problema a resolver (4 puntos).
+Descripción detallada de los datos originales (4 puntos).
+Análisis exploratorio de datos (4 puntos).
+Análisis estadístico de los datos (4 puntos).
+Interpretación de los resultados y conclusión (4 puntos).
+
+

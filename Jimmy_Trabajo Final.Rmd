@@ -5,8 +5,12 @@ date: "14/7/2021"
 output: pdf_document
 ---
 
-```{r setup, include=TRUE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r setup, include=FALSE  }
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
 ```
 
 ```{r}
@@ -24,12 +28,34 @@ library(boot)
 library(MVN)
 ```
 
+
+## TITULO Y AUTOR.
+Titulo del Proyecto: Evaluación del efecto de la densidad de cultivo y el tamaño del estanque sobre la intensidad de luz (watt/sq2) mediante el análisis de modelos lineales de efectos fijos-aleatorios y modelos lineales generalizados. 
+
+
+
+## PROBLEMATICA A RESOLVER 
+El cultivo del Salmon en tierra en sistema RAS (Recirculation Aquaculture Systems) a aumentado notablemente en los últimos anos como una solución a los problemas ambientales que el sistema tradicional de cultivo en jaulas de mar ha generado desde el inicio de la industria y como una alternativa de bioseguridad para la especie cultivada. 
+
+Debido a los altos niveles de peces maduros en los sistemas RAS que se han documentado en varios sistemas de RAS existe la necesidad de conocer la relación y el comportamiento de la intensidad de luz en el fondo del estanque de un sistema RAS de cultivo con respecto a la densidad de cultivo y el tamaño del estanque
+
+
+## DESCRIPCION DETALLADA DE LOS DATOS ORIGINALES
+El set de datos corresponde a una granja peces cultivados en un sistema de cultivo RAS con dos Módulos de estanques Mod A-Mod B. Cada modulo de cultivo tiene una configuración de estanques de 50m3 y 200m3. El set de datos tiene un total de 272 mediciones de intensidad de luz asociado a diferentes densidades de cultivo y relacionado a los dos módulos de cultivo. La toma de muestras de intensidad de luz se realizó durante un ano en donde cada mes se realizaron varias mediciones a diferentes estanques con distinto volumen y densidad. Las muestras fueron tomadas mediante LI-1500 light sensor logger. El detalle de los datos recolectados se presenta en light_intensity.xlsx. 
+
+La intensidad de luz fue medida en watt/m2, el volumen de los estanques esta relacionado a los metros cúbicos de agua y la densidad de cultivo fue medida por la biomasa total en el estanque al momento de la medición sobre el volumen de agua en el estanque en la unidad de medición correspondiente a kg/m3. 
+
+
+## ANALISIS EXPLORATORIO DE LOS DATOS
+
 ## ANALISIS PARTE 1
-## ANALISIS DE MODELOS LINEALES MIXTOS DE EFECTOS FIJOS Y EFECTOS ALEATORIOS PARA EL ANALISIS DEL EFECTO DE LA DENSIDAD DE CULTIVO, EL VOLUMEN DEL ESTANQUE SOBRE LA INTENSIDAD DE LUZ
+ANALISIS DE MODELOS LINEALES MIXTOS DE EFECTOS FIJOS Y EFECTOS ALEATORIOS PARA EL ANALISIS DEL EFECTO DE LA DENSIDAD DE CULTIVO, EL VOLUMEN DEL ESTANQUE SOBRE LA INTENSIDAD DE LUZ
 
-##Exploratorio del Set de Datos Light_intensity. Medida de la intensidad de luz en watt/m2 de diferentes estqnues a diferentes densidades de cultivo en dos Modulos de cultivo diferentes. 
 
-```{r}
+
+Exploratorio del Set de Datos "Light_intensity". Medida de la intensidad de luz en watt/m2 de diferentes estqnues a diferentes densidades de cultivo en dos Modulos de cultivo diferentes en un sistema RAS. 
+
+```{r paged.print=TRUE}
 light <- read_excel("Light_intensity.xlsx")
 ```
 
@@ -41,7 +67,7 @@ light <- read_excel("Light_intensity.xlsx")
 str(light)
 ```
 
-## Ajuste de la variable y Resumen de las variables.
+## Ajuste de las variables para el analisis y Resumen de las variables.
 
 
 ```{r}
@@ -51,39 +77,50 @@ light$Tank <- as.factor(light$Tank)
 str(light)
 ```
 
-## Resumen estadistico de la variables
+## RESUMEN ESTADISTICO DE LAS VARIABLES
 
 ```{r}
 summary(light)
 ```
 
-## Analisis exploratorio de las variables.
+## ANALISIS ESTADISTICO Y EXPLORATORIO DE LAS VARIABLES
 
-## Box-plot de intensidad de luz- watt/sqr 2 en Modulo A y Modulo B
+## BOX-PLOT INTENSIDAD DE LUZ watt/sqr 2 MODULO A y MODULO B
+
 
 ```{r}
 ggplot(data = light,aes(x= Module, y = watt_sq2, fill=Module)) +
   geom_boxplot() + theme(legend.position = 'right')
 
 ```
+Figura 1. Box-Plot de la intensidad de luz en ambos modulos de cultivo. La medida de intensidad de luz es similar para ambos modulos sin diferenciar el volumen del estanque. 
 
-## Plot de intensidad de luz- watt/sqr 2 en Modulo A y Modulo B
+
+
+## BOX-PLOT INTENSIDAD DE LUZ luz- watt/sqr 2 MODULO A y MODULO B 
 
 ```{r}
-p <- ggplot(data = light,aes(x = Module, y = watt_sq2))
-p + geom_point(aes(colour = Volume_m3)) + stat_smooth(se = FALSE)
+ggplot(light, aes(x= Module, y = watt_sq2, fill=Module)) +
+  geom_boxplot()+
+  facet_wrap(~ Volume_m3)
 ```
+Figura 2. Box-Plot de la intensidad de luz en ambos modulos de cultivo y en estanuqes de 50m3 y 200m3. La medida de intensidad de luz es similar para ambos modulos para estanuqes de 200m3 y levemente menor en estqnues de 50m3 en el modulo A..
 
-## Histograma de la variable respuesta light watt/m2
 
+## EXPLORATORIO DE NORMALIDAD DE LA VARIABLE RESPUESTA light
+
+## HISTOGRAMA DE LA VARIABLE RESPUESTA light watt/m2
 
 ```{r}
 ggplot(light, aes(x=watt_sq2))+
   geom_histogram(color="darkblue", fill="red")
 ```
+Figura 3. Histograma de la variable respuesta light. Curva con una distribucion positivamente sesgada hacia la derecha.
 
 
-## Histograma de la variable respuesta light watt/m2 con la curva normal teorica
+
+## HISTOGRAMA DE LA VARIABLE RESPUESTA  watt/m2 CON LA CURVA NORMAL TEORICA
+
 
 ```{r}
 ggplot(data = light, aes(x = watt_sq2)) +
@@ -96,122 +133,167 @@ ggplot(data = light, aes(x = watt_sq2)) +
   ggtitle("Histograma de light + Curva normal teórica") +
   theme_bw()
 ```
+Figura 4. Histograma de la variable respuesta Light en donde se muestra la curva normal teorica. 
 
-## Test de Normalidad para la variable respuesta light watt_sq2
+
+## TEST DE NORMALIDAD PARA LA VARIABLE RESPUESTA light watt_sq2
+
 
 ```{r}
 shapiro.test (light$watt_sq2)
 ```
-## La variable respuesta no presenta normalidad.
+De accuerdo al analisis de Shapiro-Wilk test de normalidad, la variable respuesta light no presenta normalidad. Se rechaza la Hipotesis Nula. 
 
-#
-#
 
-## ANALISIS DE MODELOS LINEALES MIXTOS##
 
-#
-## Modelo de efectos fijos.
+## ANALISIS DE MODELOS LINEALES MIXTOS
 
-#
+
+## MODELOS DE EFECTOS FIJOS.
+
+
 ## Ajuste de un modelo de efectos fijos donde la variable respuesta es light intensity y como efectos fijos del modelo las variables Density y Volumen de estanque. Density y Volumen como variables predictoras.  
 
 
 
-## Modelo 1 de efectos fijos
+## MODELO 1 DE EFECTOS FIJOS
+
 ```{r}
 mod.1a <- lm(watt_sq2 ~ Density, data = light)
-pander::pander(summary(mod.1a), caption = "Modelo de efectos fijos de la variable respuesta light y la interaccion de las variable predictora Density mas volume_m3")
+pander::pander(summary(mod.1a), caption = " Tabla 2 Modelo 1 de efectos fijos de la variable respuesta light y la interaccion de las variable predictora Density mas volume_m3")
+summary(mod.1a)
 ```
 
-## PLot Modelo 1 efectos fijos
+Tabla 2: Modelo de efectos fijos 1.Intensidad de luz y densidad de cultivo. Los valores de Pr  para las variables regresoras son menores al nivel de significancia del 5% lo cual son estadisticamente significativos.  El ajuste del modelo es de 0.218. El p-value del modelo es menor al 5% por lo tanto tiene capacidad predictora. 
+
+
+## PLOT DEL MODELO 1 DE EFECTOS FIJOS
 
 ```{r}
 plot(light$watt_sq2,light$Density)
 abline(coef(mod.1a))
 ```
 
-## Modelo 2 de efectos fijos
+Figura 5. Plot del modelo 1. Intensidad de luz y densidad de cultivo. 
+
+
+
+## MODELO 2 DE EFECTOS FIJOS
 
 ```{r}
 mod.1b <- lm(watt_sq2 ~ Density + Volume_m3, data = light)
 
 pander::pander(summary(mod.1b), caption = "Modelo de efectos fijos de la variable respuesta light y la interaccion de las variable predictora Density mas volume_m3")
+summary(mod.1b)
 ```
 
-## Plot del modelo
+Modelo de efectos fijos 2.Intensidad de luz y densidad de cultivo. Los valores de Pr para las variables regresoras son menores al nivel de significancia del 5% lo cual son significativas. El ajuste del modelo es de 0.2756 y tiene capacidad predictora. 
+
+
+
+## PLOT DEL MODELO 2 AJUSTADO DE EFECTOS FIJOS
 
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.1b)
 ```
+Figura 6. Plot del modelo 2 ajustado. Variable respuesta light y como efectos fijos densidad de cultivo y volumen del estanque. 
 
-## Test de normalidad para el modelos de efectos fijos 
+
+## TEST DE NORMALIDAD MODELOS EFECTOS FIJOS
 
 ```{r}
+shapiro.test (residuals (mod.1a))
 shapiro.test (residuals (mod.1b))
 ```
-## EL modelo de efectos fijos no presenta normalidad
+
+Los modelos de efectos fijos no presentan normalidad.
 
 
-## Modelo Integrado 1
+## MODELOS INTEGRADOS.
+
+## MODELO LINEAL INTEGRADO 1
 
 ```{r}
 mod.1.int <- lm(watt_sq2 ~ Density:Volume_m3, data = light)
 
-pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos de la variable respuesta light y el efecto de interaccion entre variable predictora Density y volume_m3")
+pander::pander(summary(mod.1.int), caption = "Modelo de efectos fijos integrado de la variable respuesta light y el efecto de interaccion entre variable predictora Density y volume_m3")
 ```
 
+Modelo 2 de efectos fijos integrado .Intensidad de luz, y el efecto integrado entre la densidad de cultivo y el volumen del estanque. Los valores de Pr del modelo es menor al nivel de significancia del 5% lo cual el modelo tiene capacidad predictora. El ajuste del modelo es de 0.2782.      
 
-## Plot del Modelo
+
+
+## PLOT DE MODELO 1 DE EFECTOS FIJOS INTEGRADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.1.int)
 ```
+Figura 7. Plot del modelo 1 de efectos fijos integrado. Variable respuesta light y como efectos fijos densidad de cultivo y volumen del estanque. 
 
-## Modelo integrado 2
+
+
+
+
+
+## MODELO LINEAL INTEGRADO 2
 
 ```{r}
 mod.2.int <- lm(watt_sq2 ~ Density+Volume_m3+Density:Volume_m3, data = light)
 
-pander::pander(summary(mod.2.int), caption = "Modelo de efectos fijos de la variable respuesta light y el efecto de interaccion de las variable predictora Density y volume_m3 mas el efecto entre Density y Volume_m3")
+pander::pander(summary(mod.2.int), caption = "Modelo 2 de efectos fijos integrados de la variable respuesta light y el efecto de interaccion de las variable predictora Density y volume_m3 mas el efecto entre Density y Volume_m3")
+summary(mod.2.int)
 ```
 
-## Plot del modelo
+Modelo 2 de efectos integrado .Intensidad de luz, y el efecto integrado entre la densidad de cultivo y el volumen del estanque mas el efecto del la densidad y el volumen del estqanque. Los valores de Pr para las variables explicativas Volume_m350m3 y Density:Volume_m350m3  son menores al nivel de significancia del 5% lo cual esas variables de modelo son estadisticamente significativas. El ajuste del modelo es de 0.2782.      
+
+
+## PLOT DEL MODELO 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.2.int)
 ```
 
+Figura 8. Plot del modelo 2 integrado . Variable respuesta light y como efectos fijos densidad de cultivo y volumen del estanque mas la interaccion entre la densidad de cultivo y el volumen del estanque. 
 
-## Test de normalidad para los modelos integrados 
+
+## TEST DE NORMALIDAD PARA LOS MODELOS INTEGRADOS 
 
 ```{r}
 shapiro.test (residuals (mod.1.int))
 shapiro.test (residuals (mod.2.int))
 ```
 ## Los modelo integrados no presentan normalidad
-## El valor de p-value es menor a 0.05 por lo tanto el modelo no presenta una distribucion normal.    
+El valor de p-value es menor a 0.05 por lo tanto los modelo no presenta una distribucion normal.    
+
 
 
 ## MODELOS CON EFECTOS ALEATORIOS
 
-## Modelo con efectos aleatorios 1
+
+## MODELOS 1 CON EFECTOS ALEATORIOS 
 
 ```{r}
 mod.A.1 <- lmer(watt_sq2 ~ Density + Volume_m3 + (1|Module), data = light)
 summary(mod.A.1)
 ```
 
-## Modelo de efectos aleatorios 2
+Modelo 1 de efectos aleatorios. Variable respuesta intensidad de luz y como variables regresoras densidad del estanque mas el volumen y como efecto aleatorio el modulo de cultivo. 
+
+
+## MODELO 2 DE EFECTO ALEATORO
 
 ```{r}
 mod.A.2 <- lmer(watt_sq2 ~ Density+Volume_m3+Density:Volume_m3 + (1|Module), data = light)
 summary(mod.A.2)
 ```
 
-## Test de Normalidad para los modelos aleatorios.
+Modelo 2 de efectos aleatorios. Variable respuesta intensidad de luz y como variables regresoras densidad del estanque mas el volumen mas la interaccion entre la densidad y el volumen y como efecto aleatorio el modulo de cultivo. 
+
+
+## TEST DE NORMALIDAD MODELOS EFECTOS ALEATORIOS
 
 ```{r}
 shapiro.test (residuals (mod.A.1))
@@ -220,54 +302,63 @@ shapiro.test (residuals (mod.A.2))
 
 ## Los modelos aleatorios no presentan normalidad
 
-## Los modelos lineales modelados anteriormente asi como la variable respuesta Watt_sq2 no presentan una distribucion normal, por lo tanto no se cumplen con los supuestos de los Modelos Lineales Mixtos. 
+## CONCLUSION ANALISIS 1:
+Los modelos lineales modelados anteriormente asi como la variable respuesta Watt_sq2 no presentan una distribucion normal, por lo tanto no se cumplen con los supuestos de los Modelos Lineales Mixtos. 
 
-## La avriable predictora Volume_m3 presenta solo dos niveles (binomial) 50m3 y 200 m3 por lo tanto no pueden ser considerado como un efecto aleatorio.
+La variable predictora Volume_m3 presenta solo dos niveles (binomial) 50m3 y 200 m3 por lo tanto no pueden ser considerado como un efecto aleatorio.
 
-## Conclusion del analisis 1: No se puede determinar mediante un analisis de modelos lineales de efectos fijos y efectos aleatorios el efecto de la densidad y el volumen en la intensidad de la luz medida en los estanques. La variable respuesta intensidad de luz: watt_sq2no tiene distribucion normal y la variable predictora Volume_m3 es categorica binomial.
+De los analisis de normalidad de los modelos lineales fijos, efectos fijos integrados y efectos aleatorios se observa que no presentan normalidad por lo tanto el analisis no se puede llevar a cabo mediante los modelos lineales antes descritos. 
+
+No se puede determinar mediante un analisis de modelos lineales de efectos fijos y efectos aleatorios el efecto de la densidad y el volumen en la intensidad de la luz medida en los estanques. La variable respuesta intensidad de luz: watt_sq2 No tiene distribucion normal y la variable predictora Volume_m3 es categorica binomial.
+
+
+
 
 
 
 ## ANALISIS PARTE 2
+
 ## ANALISIS DE MODELOS LINEALES GENERALIZADOS PARA EL ANALISIS DEL EFECTO DE LA DENSIDAD DE CULTIVO, EL VOLUMEN DEL ESTANQUE SOBRE LA INTENSIDAD DE LUZ
 
 
-## Modelos lineales Generalizados (Bernoulli).
+## MODELOS GENERALIZADOS (Bernoulli).
 
 
-## Modelo lineal generalizado 1-Nulo-Sobre la variable respuesta Intensidad de luz <watt_sq2>
+## MODELO 1 LINEAL GENERALIZADO 
+Sobre la variable respuesta Intensidad de luz <watt_sq2>
 
 
 ```{r}
 mod.g1 <- glm(watt_sq2 ~ 1, family= binomial, data = light)
 summary(mod.g1)
 ```
-## El valor de p-values para el intercepto es menor que 0.05 por lo tanto el modelo tiene capacidad predictora.El intercepto del modelo es estadisticamente significativamente
+El valor de p-values para el intercepto es menor que 0.05 por lo tanto el modelo tiene capacidad predictora.El intercepto del modelo es estadisticamente significativo.
 
 
 
-## Modelo Generalizado 2 sobre la variable respuesta watt_sq2 y como variable predictora Density
+## MODELO 2 GENERALIZADO.
+sobre la variable respuesta watt_sq2 y como variable predictora Density
   
 ```{r}
 mod.g2 <- glm(watt_sq2 ~ Density, family= binomial, data = light)
 summary(mod.g2)
 ```
-## El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
 
-## Plot del Modelo G 2
+## PLOT DEL MODELO 2 GENERALIZADO
 
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2)
 ```
+Figura 9. Plot del Modelo 2 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion de la densidad de cultivo. 
 
-
-
-## Modelo Generalizado 3 sobre la variable respuesta watt_sq2 y como variable predictora Density usando el enlace canonico complemento "loglog"
+## MODELO 3 GENERALIZADO 
+sobre la variable respuesta watt_sq2 y como variable predictora Density usando el enlace canonico complemento "loglog"
   
   
 ```{r}
@@ -275,41 +366,43 @@ mod.g2a <- glm(watt_sq2 ~ Density, family= binomial(link="cloglog"), data = ligh
 summary(mod.g2a)
 ```
 
-##  El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
 
-## Plot del Modelo G 3
+## PLOT DEL MODELO 3 GENERALIZADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2a)
 ```
+Figura 10. Plot del Modelo 3 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion de la densidad de cultivo usando el enlace canonico cloglog 
 
-
-## Modelo Generalizado 4  sobre la variable respuesta watt_sq2 y el efecto de las variables predictoras Density y Module usando el enlace canonico complemento "loglog"
+## MODELO GENERALIZADO 4
+Sobre la variable respuesta watt_sq2 y el efecto de las variables predictoras Density y Module usando el enlace canonico complemento "loglog"
 
 ```{r}
 mod.g2aa <- glm(watt_sq2 ~ Density+Module, family= binomial(link="cloglog"), data = light)
 summary(mod.g2aa)
 ```
-## El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
-## El valor de p-values para el B2 es mayor que el nivel de significancia 5% por lo tanto no es estadisticamente significativo
+El valor de p-values para el B2 es mayor que el nivel de significancia 5% por lo tanto no es estadisticamente significativo
 
 
-## Plot del Modelo G 4
+## PLOT DEL MODELO 4 GENERALIZADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2aa)
 ```
+Figura 11. Plot del Modelo 4 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion entre la densidad de cultivo y el modulo del sistema RAS, usando el enlace canonico cloglog 
 
-
-## Modelo generalizado 5 sobre la variable respuesta watt_sq2 y el efecto de la variables predictora Density usando el enlace canonico complemento "probit"
+## MODELO 5 GENERALIZADO.
+Sobre la variable respuesta watt_sq2 y el efecto de la variables predictora Density usando el enlace canonico complemento "probit"
 
 ```{r}
 mod.g2ab <- glm(watt_sq2 ~ Density, family= binomial(link=probit), data = light)
@@ -317,74 +410,88 @@ summary(mod.g2ab)
 
 ```
 
-## El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
 
 
-## Plot del Modelo G 5
+## PLOT DEL MODELO 5 GENERALIZADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2ab)
 ```
+Figura 12. Plot del Modelo 5 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion de la densidad de cultivo , usando el enlace canonico probit 
 
 
-## Moddelo Generalizado 6 sobre la variable respuesta watt_sq2 y el efecto entre  variables predictoras Density y Module usando el enlace canonico complemento "probit"
+## MODELO GENERALIZADO 6
+Sobre la variable respuesta watt_sq2 y el efecto entre  variables predictoras Density y Module usando el enlace canonico complemento "probit"
 
 ```{r}
 mod.g2ab1 <- glm(watt_sq2 ~ Density:Module, family= binomial(link=probit), data = light)
 summary(mod.g2ab1)
 ```
 
-## El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
-## El valor de p-values para el B2 es menor que el nivel de significancia 5% por lo tanto  es estadisticamente significativo
+El valor de p-values para el B2 es menor que el nivel de significancia 5% por lo tanto  es estadisticamente significativo
 
-## Plot del Modelo G 6
+## PLOT DEL MODELO 6 GENERALIZADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2ab1)
 ```
+Figura 13. Plot del Modelo 6 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion entre la densidad de cultivo y el modulo del sistema RAS , usando el enlace canonico probit 
 
 
-## Model 7  sobre la variable respuesta watt_sq2 y el efecto de las variables predictoras Density y Volume usando el enlace canonico complemento "cloglog"
+## MODELO 7 GENERALIZADO
+Sobre la variable respuesta watt_sq2 y el efecto de las variables predictoras Density y Volume usando el enlace canonico complemento "cloglog"
 
 ```{r}
 mod.g2aab <- glm(watt_sq2 ~ Density+Volume_m3, family= binomial(link="cloglog"), data = light)
 summary(mod.g2aab)
 ```
 
-## El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
+El valor de p-values para el intercepto es mayor que el nivel de significancia 0.05 por lo tanto no es estadisticamente significativo
 
-## El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
+El valor de p-values para el B1 es menor que el nivel de significancia 5% por lo tanto es estadisticamente significativo
 
-## El valor de p-values para el B2 es mayor que el nivel de significancia 5% por lo tanto  no es estadisticamente significativo
+El valor de p-values para el B2 es mayor que el nivel de significancia 5% por lo tanto  no es estadisticamente significativo
 
-## Plot del Modelo G 7
+## PLOT DEL MODELO 7 GENERALIZADO
 
 ```{r}
 par(mfrow=c(2,2))
 plot(mod.g2aab)
 ```
+Figura 14. Plot del Modelo 7 Generalizado. Efecto de la variable regresora intensidad de luz y la interaccion entre la densidad de cultivo mas la interaccion del volumen del estanque, usando el enlace canonico cloglog 
 
 
-##Comparacion de los Modelos Generalizados
+
+## COMPARACION DE LOS MODELOS GENERALIZADOS
 
 
 ```{r}
 anova(mod.g2,mod.g2,mod.g2a,mod.g2aa,mod.g2ab,mod.g2ab1,mod.g2aab)
 ```
 
-## De acuerdo al analisis anova la suma de cuadrados residuales de modelo 7 es menor al resto de los modelos, por lo tanto el modelo 7 Model 7: watt_sq2 ~ Density + Volume_m3 se ajusta de mejor a los datos analizados. 
+De acuerdo al analisis anova la suma de cuadrados residuales de modelo 7 es menor al resto de los modelos, por lo tanto el modelo 7 Model 7: watt_sq2 ~ Density + Volume_m3 se ajusta de mejor a los datos analizados.
 
-## De acuerdo al analisis anova se puede decir que la densidad de cultivo y el volumen del estanque tienen un efecto en la intensidad de luz.  
+El ajuste del modelo 7 corrrsponde a la variable respuesta intsensidada de luz y la interaccion de las variables regresoras Desnidad de cultivo mas volumen usando el enlace canonico cloglog.
 
-## Conclusion del analisis 2: Mediante un analisis modelos generales linealizados se puede predecir el efecto de la densidad y del tamano del estqanque sobre la intensdad de la luz medida. 
+De acuerdo al analisis anova se puede decir que la densidad de cultivo y el volumen del estanque tienen un efecto en la intensidad de luz.  
+
+## CONCLUSION ANALISIS 2: 
+Mediante un analisis modelos generales linealizados se puede predecir el efecto de la densidad y del tamano del estanques sobre la intensdad de la luz medida. 
+Los modelos lineales generales empleados en el analisis tienen capacidad predictora del efecto de la densidad de cultivo y el tamano del estanque sobre la intensidad de la luz en el fondo de los estanues, pero los R ajustados de los modelos indican que estos a pesar de tener capacidad predictora de la variable respuesta no tienen buen ajuste en relacion a las variables regresoras. 
+
+
+
+
 
 
 
