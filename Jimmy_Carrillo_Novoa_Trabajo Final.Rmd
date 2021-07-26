@@ -522,7 +522,7 @@ La tabla 21 muestra la D^2 del modelo Completo. El modelo GLM 3 Completo represe
 par(mfrow=c(2,2))
 plot(mod.ga3)
 ```
-Figura 9. PLot de GLM3.
+Figura 9. Plot GLM 3 Modelo Completo
 
 La figura 9 muestra el la curva de Residual vs Fitted la correlacion de los residuales versus los ajustados, muestra la aproximacion y relacion de los errores con la media de la poblacional. Esto muestra la poca variabilidad de la variable respuesta con las variables regresoras explicado en la tabla 21 con el analisis de la Deviance. 
 

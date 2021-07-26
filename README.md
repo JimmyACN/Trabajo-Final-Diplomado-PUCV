@@ -120,7 +120,7 @@ Seleccion del Modelo
 Calculo de DEVIANCE para Modelo Seleccionado
 Conclusiones. 
 
-Se agrega plot modelo completo. 
+Se agrega plot GLM3 Modelo completo
 
 
 
