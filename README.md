@@ -120,5 +120,7 @@ Seleccion del Modelo
 Calculo de DEVIANCE para Modelo Seleccionado
 Conclusiones. 
 
+Se agrega plot modelo completo. 
+
 
 
