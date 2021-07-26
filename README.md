@@ -107,4 +107,18 @@ Análisis exploratorio de datos (4 puntos).
 Análisis estadístico de los datos (4 puntos).
 Interpretación de los resultados y conclusión (4 puntos) 
 
+# Progress on July 26 FINAL REPORTING 
+
+Modelamiento GLM para el set de datos.
+Calculo de tres modelos GLM
+        Modeo nulo
+        Modelo saturado
+        Modelo completo
+Calculo de p-values para cada modelo
+Calculo de AIC para cada modelo
+Seleccion del Modelo
+Calculo de DEVIANCE para Modelo Seleccionado
+Conclusiones. 
+
+
 
